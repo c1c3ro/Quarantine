@@ -350,58 +350,60 @@ while running:
 
     if list_of_virus and (list_of_virus[0].rect.y % new_enemy_range) == 0:
         new_virus()
-        pygame.sprite.groupcollide(heal_group, virus_group,
-                                   False, True, pygame.sprite.collide_mask)
+        pygame.sprite.groupcollide(heal_group, virus_group, False, True)
 
     if not list_of_soap:
         fire_soap = False
 
     if fire_soap:
-        if pygame.sprite.groupcollide(soap_group, virus_group, True, True,
-                                      pygame.sprite.collide_mask):
-            if not mute:
-                damage.play()
-            points += 1
-            if (points % 50) == 0:
-            	new_enemy_range -= 10
-            	if new_enemy_range < 50:
-            		new_enemy_range = 50
+        if pygame.sprite.groupcollide(soap_group, virus_group, False, False):
+            if pygame.sprite.groupcollide(soap_group, virus_group, True, True,
+                                          pygame.sprite.collide_mask):
+                if not mute:
+                    damage.play()
+                points += 1
+                if (points % 50) == 0:
+                	new_enemy_range -= 10
+                	if new_enemy_range < 50:
+                		new_enemy_range = 50
         if list_of_soap[0].rect.y < 0:
             soap_group.remove(list_of_soap[0])
 
-    if pygame.sprite.groupcollide(doctor_group, virus_group, False, True,
-                                  pygame.sprite.collide_mask):
-        if not mute:
-            cardi_b.play()
-        hurt_or_heal -= 50
-        if hurt_or_heal < -200:
-            pygame.sprite.Group.empty(virus_group)
-            pygame.sprite.Group.empty(heal_group)
-            pygame.sprite.Group.empty(soap_group)
-            pygame.mixer.stop()
+    if pygame.sprite.groupcollide(doctor_group, virus_group, False, False):
+        if pygame.sprite.groupcollide(doctor_group, virus_group, False, True,
+                                      pygame.sprite.collide_mask):
+            if not mute:
+                cardi_b.play()
+            hurt_or_heal -= 50
+            if hurt_or_heal < -200:
+                pygame.sprite.Group.empty(virus_group)
+                pygame.sprite.Group.empty(heal_group)
+                pygame.sprite.Group.empty(soap_group)
+                pygame.mixer.stop()
 
-            if path.exists('records.txt'):
-            	last_record = open_json()
-            	if last_record['record'] < points:
-            		last_record['record'] = points
-            else:
-            	last_record = {'record': points}
+                if path.exists('records.txt'):
+                	last_record = open_json()
+                	if last_record['record'] < points:
+                		last_record['record'] = points
+                else:
+                	last_record = {'record': points}
 
-            with open('records.txt', 'w') as outfile:
-            	json.dump(last_record, outfile)
+                with open('records.txt', 'w') as outfile:
+                	json.dump(last_record, outfile)
 
-            record = pygame.font.Font("freesansbold.ttf", 32)
-            record_text = record.render('Record: ' + str(last_record['record']), True, WHITE)
-            	
-            end_game = True
+                record = pygame.font.Font("freesansbold.ttf", 32)
+                record_text = record.render('Record: ' + str(last_record['record']), True, WHITE)
+                	
+                end_game = True
 
-    if pygame.sprite.groupcollide(doctor_group, heal_group, False, True,
-                                  pygame.sprite.collide_mask):
-        if not mute:
-            heal_sound.play()
-        hurt_or_heal += 25
-        if hurt_or_heal > 0:
-            hurt_or_heal = 0
+    if pygame.sprite.groupcollide(doctor_group, heal_group, False, False):
+        if pygame.sprite.groupcollide(doctor_group, heal_group, False, True,
+                                      pygame.sprite.collide_mask):
+            if not mute:
+                heal_sound.play()
+            hurt_or_heal += 25
+            if hurt_or_heal > 0:
+                hurt_or_heal = 0
 
     doctor_group.draw(screen)
     virus_group.draw(screen)
