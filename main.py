@@ -147,8 +147,7 @@ def new_healing_object():
     image_num = randint(0, 7)
     heal = HealObject(image_num)
     heal_group.add(heal)
-    pygame.sprite.groupcollide(heal_group, virus_group, False,
-                               True, pygame.sprite.collide_mask)
+    pygame.sprite.groupcollide(heal_group, virus_group, False, True)
 
 
 def show_life_bar(x):
